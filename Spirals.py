@@ -87,8 +87,6 @@ def main():
         CURVE_MULTIPLIER = int(input("Curve Multiplier: "))
         MAX_RADIUS = int(input("Max Radius: ")) * SCALE
 
-    # pixels = numpy.zeros((HEIGHT, WIDTH, 3), dtype=numpy.uint8)
-
     threadsperblock = (16, 16)
     blockspergrid_x = int(numpy.ceil(pixels.shape[0] / threadsperblock[0]))
     blockspergrid_y = int(numpy.ceil(pixels.shape[1] / threadsperblock[1]))
