@@ -8,25 +8,37 @@ from os import getcwd, sep
 SCALE = 1
 WIDTH = 3840 * SCALE
 HEIGHT = 2160 * SCALE
+pixels = cuda.device_array((HEIGHT, WIDTH), dtype=numpy.uint8)
 
 
 @cuda.jit
 def create_image_cuda(pixels, centerX, centerY, symmetry, curve, curve_multiplier, maxRadius):
     i, j = cuda.grid(2)
-    if i < pixels.shape[0] and j < pixels.shape[1]:
-        x = j - centerX
-        y = -(i - centerY)
+    if i >= pixels.shape[0] and j >= pixels.shape[1]:
+        return
 
-        r = math.sqrt(float(x ** 2 + y ** 2))
-        if r > maxRadius:
-            return
+    x = j - centerX
+    y = -(i - centerY)
 
-        theta = 180 * math.atan2(float(x), float(y)) / numpy.pi
-        thetaShift = (curve * r / maxRadius) * multiplier(r, curve_multiplier)
-        theta += thetaShift
-        theta = theta % 360
+    radius = math.sqrt(float(x ** 2 + y ** 2))
+    if radius > maxRadius:
+        return
 
-        paint(pixels, i, j, theta, symmetry)
+    theta = 180 * math.atan2(float(x), float(y)) / numpy.pi
+    thetaShift = (curve * radius / maxRadius) * multiplier(radius, curve_multiplier)
+    theta += thetaShift
+    theta = theta % 360
+
+    # Allocate fast, shared memory
+    # sharedPixels = cuda.shared.array(shape=(16, 16), dtype=numpy.uint8)
+    # tx = cuda.threadIdx.x
+    # ty = cuda.threadIdx.y
+
+    cuda.syncthreads()
+    paint(pixels, i, j, theta, symmetry)
+    cuda.syncthreads()
+
+    # pixels[i][j] = sharedPixels[tx, ty]
 
 
 @cuda.jit(device=True)
@@ -36,7 +48,7 @@ def paint(pixels, i, j, theta, symmetry):
 
     # Invert colors
     if math.sin(theta * symmetry / 100) < .5:
-        pixels[i][j] = 255 - pixels[i][j][0]
+        pixels[i][j] = 255 - pixels[i][j]
 
 
 @cuda.jit(device=True)
@@ -75,7 +87,7 @@ def main():
         CURVE_MULTIPLIER = int(input("Curve Multiplier: "))
         MAX_RADIUS = int(input("Max Radius: ")) * SCALE
 
-    pixels = numpy.zeros((HEIGHT, WIDTH, 3), dtype=numpy.uint8)
+    # pixels = numpy.zeros((HEIGHT, WIDTH, 3), dtype=numpy.uint8)
 
     threadsperblock = (16, 16)
     blockspergrid_x = int(numpy.ceil(pixels.shape[0] / threadsperblock[0]))
@@ -92,7 +104,8 @@ def main():
         MAX_RADIUS
     )
 
-    image = Image.fromarray(pixels)
+    image_arr = pixels.copy_to_host()
+    image = Image.fromarray(image_arr)
 
     root = getcwd()
     path = root + sep + input("Save file as: ")

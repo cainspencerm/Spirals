@@ -47,3 +47,48 @@ This can happen because of short execution duration of CUDA APIs and low timer r
                     0.00%     200ns         1     200ns     200ns     200ns  cuDeviceGetUuid
 
 
+Initialized pixel array on device (no copy to device necessary):
+
+(base) C:\Users\Spencer\PycharmProjects\GPUAccelerating>nvprof python Spirals.py
+==21116== NVPROF is profiling process 21116, command: python Spirals.py
+[N]ew or [I]mport: N
+Center:  (1918, 879)
+Symmetry:  7
+Curve:  56.86
+Curve multiplier:  0
+Max radius:  1722
+Save file as: image.png
+==21116== Profiling application: python Spirals.py
+==21116== Warning: 2 API trace records have same start and end timestamps.
+This can happen because of short execution duration of CUDA APIs and low timer resolution on the underlying operating system.
+==21116== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   88.50%  14.122ms         1  14.122ms  14.122ms  14.122ms  cudapy::__main__::create_image_cuda$241(Array<unsigned char, int=2, C, mutable, aligned>, __int64, __int64, __int64, double, __int64, __int64)
+                   11.50%  1.8343ms         1  1.8343ms  1.8343ms  1.8343ms  [CUDA memcpy DtoH]
+      API calls:   88.43%  142.15ms         1  142.15ms  142.15ms  142.15ms  cuDevicePrimaryCtxRetain
+                   10.21%  16.407ms         1  16.407ms  16.407ms  16.407ms  cuMemcpyDtoH
+                    0.59%  947.20us         1  947.20us  947.20us  947.20us  cuModuleLoadDataEx
+                    0.34%  549.70us         1  549.70us  549.70us  549.70us  cuMemAlloc
+                    0.26%  424.40us         1  424.40us  424.40us  424.40us  cuLinkAddData
+                    0.07%  113.10us         1  113.10us  113.10us  113.10us  cuLinkComplete
+                    0.03%  50.100us         1  50.100us  50.100us  50.100us  cuLinkCreate
+                    0.02%  35.600us         1  35.600us  35.600us  35.600us  cuLaunchKernel
+                    0.01%  19.100us         1  19.100us  19.100us  19.100us  cuMemGetInfo
+                    0.01%  14.700us         1  14.700us  14.700us  14.700us  cuDeviceTotalMem
+                    0.01%  14.000us       101     138ns       0ns     900ns  cuDeviceGetAttribute
+                    0.00%  6.4000us         1  6.4000us  6.4000us  6.4000us  cuDeviceGetPCIBusId
+                    0.00%  5.4000us         7     771ns     100ns  1.6000us  cuCtxGetCurrent
+                    0.00%  4.0000us         1  4.0000us  4.0000us  4.0000us  cuInit
+                    0.00%  3.5000us         1  3.5000us  3.5000us  3.5000us  cuModuleGetFunction
+                    0.00%  1.7000us         2     850ns     700ns  1.0000us  cuDeviceGetName
+                    0.00%  1.6000us         1  1.6000us  1.6000us  1.6000us  cuLinkDestroy
+                    0.00%  1.5000us         3     500ns     100ns  1.2000us  cuDeviceGet
+                    0.00%  1.5000us         5     300ns     200ns     500ns  cuCtxGetDevice
+                    0.00%  1.5000us         5     300ns     100ns     700ns  cuFuncGetAttribute
+                    0.00%  1.3000us         1  1.3000us  1.3000us  1.3000us  cuDeviceComputeCapability
+                    0.00%  1.1000us         1  1.1000us  1.1000us  1.1000us  cudaRuntimeGetVersion
+                    0.00%  1.0000us         4     250ns     200ns     300ns  cuDeviceGetCount
+                    0.00%  1.0000us         1  1.0000us  1.0000us  1.0000us  cuCtxPushCurrent
+                    0.00%     700ns         1     700ns     700ns     700ns  cuDriverGetVersion
+                    0.00%     400ns         1     400ns     400ns     400ns  cuDeviceGetLuid
+                    0.00%     200ns         1     200ns     200ns     200ns  cuDeviceGetUuid
