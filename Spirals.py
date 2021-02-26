@@ -30,15 +30,15 @@ def create_image_cuda(pixels, centerX, centerY, symmetry, curve, curve_multiplie
     theta = theta % 360
 
     # Allocate fast, shared memory
-    # sharedPixels = cuda.shared.array(shape=(16, 16), dtype=numpy.uint8)
-    # tx = cuda.threadIdx.x
-    # ty = cuda.threadIdx.y
+    sharedPixels = cuda.shared.array(shape=(16, 16), dtype=numpy.uint8)
+    tx = cuda.threadIdx.x
+    ty = cuda.threadIdx.y
 
     cuda.syncthreads()
-    paint(pixels, i, j, theta, symmetry)
+    paint(sharedPixels, tx, ty, theta, symmetry)
     cuda.syncthreads()
 
-    # pixels[i][j] = sharedPixels[tx, ty]
+    pixels[i][j] = sharedPixels[tx, ty]
 
 
 @cuda.jit(device=True)
