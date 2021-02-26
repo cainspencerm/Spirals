@@ -1,0 +1,43 @@
+Candy Cane
+
+Center:  (1357, 1487)
+Symmetry:  3
+Curve:  52.93
+Curve multiplier:  0
+Max radius:  1681
+
+
+Marble
+
+Center:  (1421, 1596)
+Symmetry:  4
+Curve:  -54.4
+Curve multiplier:  1
+Max radius:  1505
+
+
+Spiral Edges
+
+Center:  (2412, 1130)
+Symmetry:  2
+Curve:  -54.42
+Curve multiplier:  0
+Max radius:  1674
+
+
+Dilution
+
+Center:  (2237, 1146)
+Symmetry:  3
+Curve:  28.23
+Curve multiplier:  1
+Max radius:  1968
+
+
+Swirls
+
+Center:  (1384, 1026)
+Symmetry:  9
+Curve:  61.64
+Curve multiplier:  1
+Max radius:  1523
